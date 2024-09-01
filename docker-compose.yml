@@ -1,0 +1,9 @@
+services:
+  hono-app:
+    image: hono-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./.env
+        required: true

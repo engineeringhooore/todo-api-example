@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  // Ref: https://www.totaltypescript.com/tsconfig-cheat-sheet
+  "compilerOptions": {
+    // Base Options:
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    // Because NOT transpiling with TypeScript:
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+
+    // For the code doesn't runs in the DOM:
+    "lib": ["es2022"],
+
+    // Additional
+    "types": ["node", "vitest/globals"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "outDir": "./dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
