@@ -2,6 +2,7 @@ import type { ITodoRepository } from "./repository";
 import type { CreateTodoSchema, UpdateTodoSchema } from "./request.schema";
 import { Todo } from "@/types/todo";
 import type { IIdentifer } from "@/lib/identifer";
+import type { IFileStorage } from "@/lib/file-storage";
 
 export interface ITodoService {
   Create(request: CreateTodoSchema): Promise<string>;
@@ -13,10 +14,16 @@ export interface ITodoService {
 
 export class TodoService implements ITodoService {
   #identifier: IIdentifer;
+  #fileStorage: IFileStorage;
   #todoRepository: ITodoRepository;
 
-  constructor(identifier: IIdentifer, todoRepository: ITodoRepository) {
+  constructor(
+    identifier: IIdentifer,
+    fileStorage: IFileStorage,
+    todoRepository: ITodoRepository,
+  ) {
     this.#identifier = identifier;
+    this.#fileStorage = fileStorage;
     this.#todoRepository = todoRepository;
   }
 
@@ -35,7 +42,8 @@ export class TodoService implements ITodoService {
     todoId: string,
     { note, attachment }: UpdateTodoSchema,
   ): Promise<string> {
-    const todo = new Todo(todoId, note, attachment);
+    const attachmentUrl = await this.#fileStorage.Upload(attachment);
+    const todo = new Todo(todoId, note, attachmentUrl);
     await this.#todoRepository.Update(todoId, todo);
     return todoId;
   }

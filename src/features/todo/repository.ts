@@ -17,7 +17,11 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async Update(todoId: string, todo: Todo): Promise<void> {
-    await sql`UPDATE todo SET (note, attachment) = (${todo.GetNote()}, ${todo.GetAttachment()}) WHERE id = ${todoId}`;
+    const result =
+      await sql`UPDATE todo SET (note, attachment) = (${todo.GetNote()}, ${todo.GetAttachment()}) WHERE id = ${todoId} RETURNING id`;
+    if (result.count === 0) {
+      throw new NotFoundError(`todo with ${todoId} id not found.`);
+    }
   }
 
   async GetById(todoId: string): Promise<Todo> {
@@ -41,6 +45,10 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async DeleteById(todoId: string): Promise<void> {
-    await sql`DELETE FROM todo WHERE id = ${todoId}`;
+    const result =
+      await sql`DELETE FROM todo WHERE id = ${todoId} RETURNING id`;
+    if (result.count === 0) {
+      throw new NotFoundError(`todo with ${todoId} id not found.`);
+    }
   }
 }

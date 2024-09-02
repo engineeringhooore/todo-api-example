@@ -68,10 +68,10 @@ export function initTodoHttpHandler(
 
   const updateHandler = apiRoute.put(
     "/:todoId",
-    zValidator("json", updateTodoSchema),
+    zValidator("form", updateTodoSchema),
     async (c) => {
       const todoId = c.req.param("todoId");
-      const data = c.req.valid("json");
+      const data = c.req.valid("form");
       await todoService.UpdateById(todoId, data);
       const response: MutationResponse = {
         id: todoId,

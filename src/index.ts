@@ -7,7 +7,10 @@ import { secureHeaders } from "hono/secure-headers";
 import { app } from "./app";
 import { translateError } from "./middlewares/translate-error";
 import { initRoute } from "./routes";
-import { JWT_AUTH_PUBLIC_KEY } from "./constants";
+
+const CORS_ORIGINS = process.env.CORS_ORIGIN_DOMAIN.split(",");
+const PORT = Number(process.env.PORT);
+const HOSTNAME = process.env.HOSTNAME;
 
 const limiter = rateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -30,11 +33,7 @@ app.onError((err, _) => {
 app.use(
   "*",
   cors({
-    origin: (origin, _) => {
-      return origin.endsWith(process.env.CORS_ORIGIN_DOMAIN)
-        ? origin
-        : "http://example.com";
-    },
+    origin: CORS_ORIGINS,
     allowHeaders: [
       "Authorization",
       "Content-Type",
@@ -44,7 +43,7 @@ app.use(
       "User-Agent",
     ],
     allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
-    exposeHeaders: ["X-Kuma-Revision", JWT_AUTH_PUBLIC_KEY],
+    exposeHeaders: ["X-Kuma-Revision"],
     maxAge: 300,
     credentials: true,
   }),
@@ -61,8 +60,6 @@ app.get("/metrics", printMetrics);
 
 initRoute(app);
 
-const PORT = Number(process.env.PORT);
-const HOSTNAME = process.env.HOSTNAME;
 console.log(`Server is running on port ${PORT}`);
 
 serve({

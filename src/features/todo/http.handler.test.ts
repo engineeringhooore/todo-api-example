@@ -78,7 +78,10 @@ it("test delete todo by id", async () => {
 it("test update todo", async () => {
   const res = await testClient(handler.updateHandler)[":todoId"].$put({
     param: { todoId },
-    json: { note: "random", attachment: "random" },
+    form: {
+      note: "random",
+      attachment: new File(["test.jpeg"], "test.jpeg", { type: "image/jpeg" }),
+    },
   });
   expect(await res.text()).toStrictEqual(
     JSON.stringify({
