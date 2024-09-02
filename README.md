@@ -1,4 +1,4 @@
-# ZOTH API
+# TODO API Example
 
 ## Getting Started
 

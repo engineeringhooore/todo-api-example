@@ -3,18 +3,14 @@ import { JWT_AUTH_PUBLIC_KEY } from "./constants";
 
 import { ULID } from "./lib/identifer";
 import { JWT } from "./lib/jwt";
-import { Argon2id } from "./lib/password";
 
 import { jws } from "./middlewares/jws";
 
-import { initAuthHttpHandler } from "./features/auth/http.handler";
-import { AuthRepository } from "./features/auth/repository";
-import { AuthService } from "./features/auth/service";
-
-import { initPermissionHttpHandler } from "./features/permission/http.handler";
+import { initTodoHttpHandler } from "./features/todo/http.handler";
+import { TodoRepository } from "./features/todo/repository";
+import { TodoService } from "./features/todo/service";
 
 export function initRoute(honoApp: AppType) {
-  const argon2id = new Argon2id();
   const ulid = new ULID();
 
   const authzJWT = new JWT(process.env.JWT_ISSUER, process.env.JWT_AUDIENCE);
@@ -26,15 +22,13 @@ export function initRoute(honoApp: AppType) {
     },
   });
 
-  const authRepository = new AuthRepository();
-  const authService = new AuthService(ulid, argon2id, authRepository);
-  const authHttpHandler = initAuthHttpHandler({
-    authService,
-    jwt: authzJWT,
-    jwtAuthPublicKey: JWT_AUTH_PUBLIC_KEY,
-  });
-  honoApp.route("/api/v1/auth", authHttpHandler.apiRoute);
-
-  const permissionHttpHandler = initPermissionHttpHandler({}, jwsMiddleware);
-  honoApp.route("/api/v1/permissions", permissionHttpHandler.apiRoute);
+  const todoRepository = new TodoRepository();
+  const todoService = new TodoService(ulid, todoRepository);
+  const todoHttpHandler = initTodoHttpHandler(
+    {
+      todoService,
+    },
+    jwsMiddleware,
+  );
+  honoApp.route("/api/v1/todo", todoHttpHandler.apiRoute);
 }
