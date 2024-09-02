@@ -1,19 +1,19 @@
+import type { IJWT } from "@/lib/jwt";
 import { testClient } from "hono/testing";
 import { initAuthHttpHandler } from "./http.handler";
-import type { IJWT } from "@/lib/jwt";
 import type { IAuthService } from "./service";
 
 const userId = "random";
 
 const jwtMock: IJWT = {
-  Sign: async () => {
-    return [userId, userId];
+  Generate: async () => {
+    return [userId, userId, userId, userId];
   },
-  VerifyAccessToken: async () => {
-    return userId;
+  AccessTokenVerify: async () => {
+    return {};
   },
-  VerifyRefreshToken: async () => {
-    return userId;
+  RefreshTokenVerify: async () => {
+    return {};
   },
 };
 
@@ -26,7 +26,11 @@ const authServiceMock: IAuthService = {
   },
 };
 
-const handler = initAuthHttpHandler(jwtMock, authServiceMock);
+const handler = initAuthHttpHandler({
+  jwtAuthPublicKey: "random",
+  jwt: jwtMock,
+  authService: authServiceMock,
+});
 
 it("test login", async () => {
   const res = await testClient(handler.loginHandler).login.$post({
@@ -35,7 +39,9 @@ it("test login", async () => {
   expect(await res.text()).toStrictEqual(
     JSON.stringify({
       access_token: userId,
+      access_public_key: userId,
       refresh_token: userId,
+      refresh_public_key: userId,
     }),
   );
 });
@@ -47,7 +53,9 @@ it("test register", async () => {
   expect(await res.text()).toStrictEqual(
     JSON.stringify({
       access_token: userId,
+      access_public_key: userId,
       refresh_token: userId,
+      refresh_public_key: userId,
     }),
   );
 });

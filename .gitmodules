@@ -1,0 +1,3 @@
+[submodule "zoth-node"]
+	path = zoth-node
+	url = https://github.com/engineeringhooore/zoth-node

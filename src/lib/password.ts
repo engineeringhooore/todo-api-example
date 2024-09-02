@@ -5,17 +5,16 @@ export interface IHasher {
   Verify(plainPassword: string, hashedPassword: string): Promise<boolean>;
 }
 
-export class Argon2id implements IHasher {
-  #argon2id: Argon2idPass;
+export class Argon2id extends Argon2idPass implements IHasher {
   constructor() {
-    this.#argon2id = new Argon2idPass();
+    super();
   }
 
   Hash(plainPassword: string): Promise<string> {
-    return this.#argon2id.hash(plainPassword);
+    return this.hash(plainPassword);
   }
 
   Verify(plainPassword: string, hashedPassword: string): Promise<boolean> {
-    return this.#argon2id.verify(hashedPassword, plainPassword);
+    return this.verify(hashedPassword, plainPassword);
   }
 }
