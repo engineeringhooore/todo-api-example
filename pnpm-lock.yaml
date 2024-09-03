@@ -16,9 +16,6 @@ importers:
       "@hono/zod-openapi":
         specifier: ^0.16.0
         version: 0.16.0(hono@4.5.10)(zod@3.23.8)
-      "@hono/zod-validator":
-        specifier: ^0.2.2
-        version: 0.2.2(hono@4.5.10)(zod@3.23.8)
       hono:
         specifier: ^4.5.10
         version: 4.5.10
